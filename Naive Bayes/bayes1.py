@@ -46,6 +46,40 @@ def get_likelihood(features, label_indices, smoothing = 0):
     
     return likelihood
 
+def get_posterior(X, prior, likelihood):
+    '''
+    Compute posterior of testing samples, based on prior and likelihood
+
+    @param X: test samples
+    @param prior: dictionary, with class label as key, corresponding prior
+                  as the value
+    @param likelihood: dictionary, with class label as key, corresponding
+                       conditional probability vector as value
+    @return: dictonary, with class label as key, corresponding posterior as
+             value
+    '''
+    posteriors = []
+
+    for x in X:
+        # posterior is proportional to prior × likelihood
+        posterior = prior.copy()
+        for label, likelihood_label in likelihood.items():
+            for index, bool_value in enumerate(x):
+                posterior[label] *= likelihood_label[index] if \
+                    bool_value else (1 - likelihood_label[index])
+        
+        # normalize data
+        sum_posterior = sum(posterior.values())
+        for label in posterior:
+            if posterior[label] == float('inf'):
+                posterior[label] = 1.0
+            else:
+                posterior[label] /= sum_posterior
+        
+        posteriors.append(posterior.copy())
+
+    return posteriors
+
 if __name__ == '__main__':
     # X training array
     xTrain = np.array([
@@ -68,3 +102,6 @@ if __name__ == '__main__':
 
     likelihood = get_likelihood(xTrain, labelIdx, smoothing = 1)
     print(f'Likelihood:\n{likelihood}')
+
+    posterior = get_posterior(xTest, prior, likelihood)
+    print(f'Posterior:\n{posterior}')

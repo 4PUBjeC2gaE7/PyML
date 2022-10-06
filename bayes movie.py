@@ -53,3 +53,7 @@ if __name__ == '__main__':
     data, movieNRating, movieIdMapping = load_rating_data(dataPath, nUsers, nMovies)
 
     display_distribution(data)
+
+    movieIdMost, nRatingsMost = sorted(movieNRating.items(),
+                                       key = lambda d: d[1], reverse = True)[0]
+    print(f'Movie ID {movieIdMost} has {nRatingsMost} ratings!')

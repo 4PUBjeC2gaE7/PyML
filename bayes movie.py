@@ -7,7 +7,8 @@ nMovies = 3706  # from the movies.dat file
 
 def load_rating_data(dataPath, nUsers, nMovies):
     '''
-    Load rating data from file and also return the number of ratings for each movie and movieId index mapping
+    Load rating data from file and also return the number of ratings for each
+    movie and movieId index mapping
 
     @param dataPath: path of the rating datafile
     @param nUsers: number of users
@@ -37,3 +38,18 @@ def load_rating_data(dataPath, nUsers, nMovies):
             if rating > 0:
                 movieNRating[movieId] += 1
     return data, movieNRating, movieIdMapping
+
+def display_distribution(data):
+    '''
+    Prints the distribution of ratings from zero (unrated) to 5
+
+    @param data: rating data in the numpy array of [user, movie];
+    '''
+    values, counts = np.unique(data, return_counts = True)
+    for value, count in zip(values, counts):
+        print(f'Number of rating {int(value)}: {count}')
+
+if __name__ == '__main__':
+    data, movieNRating, movieIdMapping = load_rating_data(dataPath, nUsers, nMovies)
+
+    display_distribution(data)

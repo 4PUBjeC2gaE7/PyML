@@ -1,5 +1,7 @@
 import numpy as np
 from collections import defaultdict
+from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import MultinomialNB
 
 dataPath = 'ml-1m/ratings.dat'
 nUsers = 6040   # from the users.dat file TODO: read file for no. of entries
@@ -76,3 +78,13 @@ if __name__ == '__main__':
     nNeg = (Y == 0).sum()
     print(f'There are {nPos} positive samples and {nNeg} negative samples')
 
+    # Train sklearn model
+    xTrain, xTest, yTrain, yTest = train_test_split(X, Y, test_size=0.2, random_state=42)
+    print(f'Training: {len(yTrain)}\tTest: {len(yTest)}')
+
+    # Train multinomial Naive Bayes
+    clf = MultinomialNB(alpha=1.0, fit_prior=True)
+    clf.fit(xTrain, yTrain)
+    print(f'Predicted probability:\n{clf.predict_proba(xTest)[:10]}')
+    print(f'Prediction:\n{clf.predict(xTest)[:10]}')
+    print(f'Accuracy: {clf.score(xTest,yTest)*100:0.1f}%')

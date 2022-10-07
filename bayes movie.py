@@ -46,8 +46,10 @@ def display_distribution(data):
     @param data: rating data in the numpy array of [user, movie];
     '''
     values, counts = np.unique(data, return_counts = True)
+    print('\n \u001b[4m\u001b[33mData Distribution\u001b[0m')
     for value, count in zip(values, counts):
-        print(f'Number of rating {int(value)}: {count}')
+        print(f' rating {int(value)}:{count:-8d}')
+    print('')
 
 if __name__ == '__main__':
     recommended = 3
@@ -73,3 +75,4 @@ if __name__ == '__main__':
     nPos = (Y == 1).sum()
     nNeg = (Y == 0).sum()
     print(f'There are {nPos} positive samples and {nNeg} negative samples')
+

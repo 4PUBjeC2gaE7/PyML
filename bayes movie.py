@@ -50,6 +50,7 @@ def display_distribution(data):
         print(f'Number of rating {int(value)}: {count}')
 
 if __name__ == '__main__':
+    recommended = 3
     data, movieNRating, movieIdMapping = load_rating_data(dataPath, nUsers, nMovies)
 
     display_distribution(data)
@@ -57,3 +58,18 @@ if __name__ == '__main__':
     movieIdMost, nRatingsMost = sorted(movieNRating.items(),
                                        key = lambda d: d[1], reverse = True)[0]
     print(f'Movie ID {movieIdMost} has {nRatingsMost} ratings!')
+    # Build X-Y dataset
+    xRaw = np.delete(data, movieIdMapping[movieIdMost], axis = 1)
+    yRaw = data[:, movieIdMapping[movieIdMost]]
+    # Discard samples without a rating for "Most" Movie
+    X = xRaw[yRaw > 0]
+    Y = yRaw[yRaw > 0]
+    print(f'Shape of X: {X.shape}')
+    print(f'Shape of Y: {Y.shape}')
+    display_distribution(Y)
+    # Check for recommendation
+    Y[Y <= recommended] = 0
+    Y[Y > recommended] = 1
+    nPos = (Y == 1).sum()
+    nNeg = (Y == 0).sum()
+    print(f'There are {nPos} positive samples and {nNeg} negative samples')

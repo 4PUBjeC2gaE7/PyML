@@ -2,11 +2,16 @@ import numpy as np
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, classification_report
 
 dataPath = 'ml-1m/ratings.dat'
 nUsers = 6040   # from the users.dat file TODO: read file for no. of entries
 nMovies = 3706  # from the movies.dat file
+
+def printHead(myString):
+    if type(myString) is str:
+        print(f'\n \u001b[4m\u001b[33m{myString}\u001b[0m')
+
 
 def load_rating_data(dataPath, nUsers, nMovies):
     '''
@@ -49,7 +54,7 @@ def display_distribution(data):
     @param data: rating data in the numpy array of [user, movie];
     '''
     values, counts = np.unique(data, return_counts = True)
-    print('\n \u001b[4m\u001b[33mData Distribution\u001b[0m')
+    printHead('Data Distribution')
     for value, count in zip(values, counts):
         print(f' rating {int(value)}:{count:-8d}')
     print('')
@@ -93,9 +98,13 @@ if __name__ == '__main__':
     print(f'Accuracy: {clf.score(xTest,yTest)*100:0.1f}%')
 
     # Compute confusion matrix
-    print('\n \u001b[4m\u001b[33mConfusion Matrix\u001b[0m')
+    printHead('Confusion Matrix')
     print(confusion_matrix(yTest, prediction, labels=[0, 1]))
-    print(f'precision: {precision_score(yTest, prediction, pos_label=1):0.2f}')
-    print(f'recall: {recall_score(yTest, prediction, pos_label=1):0.2f}')
-    print(f'f1 (pos) score: {f1_score(yTest, prediction, pos_label=1):0.2f}')
+    print(f'\nprecision: {precision_score(yTest, prediction, pos_label=1):0.2f}')
+    print(f'recall: {recall_score(yTest, prediction, pos_label=1):0.2f};  a.k.a TPR')
     print(f'f1 (neg) score: {f1_score(yTest, prediction, pos_label=0):0.2f}')
+    print(f'f1 (pos) score: {f1_score(yTest, prediction, pos_label=1):0.2f}')
+
+    printHead('Classification Report')
+    report = classification_report(yTest, prediction)
+    print(report)

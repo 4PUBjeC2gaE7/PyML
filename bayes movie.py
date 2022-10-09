@@ -2,6 +2,7 @@ import numpy as np
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
 
 dataPath = 'ml-1m/ratings.dat'
 nUsers = 6040   # from the users.dat file TODO: read file for no. of entries
@@ -85,6 +86,16 @@ if __name__ == '__main__':
     # Train multinomial Naive Bayes
     clf = MultinomialNB(alpha=1.0, fit_prior=True)
     clf.fit(xTrain, yTrain)
+
+    prediction = clf.predict(xTest)
     print(f'Predicted probability:\n{clf.predict_proba(xTest)[:10]}')
-    print(f'Prediction:\n{clf.predict(xTest)[:10]}')
+    print(f'Prediction:\n{prediction[:10]}')
     print(f'Accuracy: {clf.score(xTest,yTest)*100:0.1f}%')
+
+    # Compute confusion matrix
+    print('\n \u001b[4m\u001b[33mConfusion Matrix\u001b[0m')
+    print(confusion_matrix(yTest, prediction, labels=[0, 1]))
+    print(f'precision: {precision_score(yTest, prediction, pos_label=1):0.2f}')
+    print(f'recall: {recall_score(yTest, prediction, pos_label=1):0.2f}')
+    print(f'f1 (pos) score: {f1_score(yTest, prediction, pos_label=1):0.2f}')
+    print(f'f1 (neg) score: {f1_score(yTest, prediction, pos_label=0):0.2f}')

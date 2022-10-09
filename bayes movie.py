@@ -1,3 +1,4 @@
+from re import T
 import numpy as np
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
@@ -92,8 +93,9 @@ if __name__ == '__main__':
     clf = MultinomialNB(alpha=1.0, fit_prior=True)
     clf.fit(xTrain, yTrain)
 
+    predProb = clf.predict_proba(xTest)
     prediction = clf.predict(xTest)
-    print(f'Predicted probability:\n{clf.predict_proba(xTest)[:10]}')
+    print(f'Predicted probability:\n{predProb[:10]}')
     print(f'Prediction:\n{prediction[:10]}')
     print(f'Accuracy: {clf.score(xTest,yTest)*100:0.1f}%')
 
@@ -108,3 +110,24 @@ if __name__ == '__main__':
     printHead('Classification Report')
     report = classification_report(yTest, prediction)
     print(report)
+
+    # Messing with "Receiver Operating Characteristic (ROC)"
+    posProb = predProb[:,1]
+    thresholds = np.arange(0.0, 1.1, 0.05)
+    truePos, falsePos = [0]*len(thresholds), [0]*len(thresholds)
+    for pred, y in zip(posProb, yTest):
+        for i, threshold in enumerate(thresholds):
+            if pred >= threshold:
+                # if truth and predict are both '1'
+                if y == 1:
+                    truePos[i] += 1
+                # if truth is '0' and predict is '1'
+                else:
+                    falsePos[i] += 1
+            else:
+                break
+
+    nPosTest = (yTest == 1).sum()
+    nNegTest = (yTest == 0).sum()
+    truePosRate = [tp / nPosTest for tp in truePos]
+    falsePosRate = [fp / nNegTest for fp in falsePos]

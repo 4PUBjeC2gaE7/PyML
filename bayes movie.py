@@ -4,7 +4,8 @@ import matplotlib.pyplot as plt
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, classification_report
+from sklearn.metrics import confusion_matrix, precision_score, roc_auc_score, \
+                            recall_score, f1_score, classification_report
 
 dataPath = 'ml-1m/ratings.dat'
 nUsers = 6040   # from the users.dat file TODO: read file for no. of entries
@@ -107,7 +108,7 @@ if __name__ == '__main__':
     print(f'recall: {recall_score(yTest, prediction, pos_label=1):0.2f};  a.k.a TPR')
     print(f'f1 (neg) score: {f1_score(yTest, prediction, pos_label=0):0.2f}')
     print(f'f1 (pos) score: {f1_score(yTest, prediction, pos_label=1):0.2f}')
-
+    
     printHead('Classification Report')
     report = classification_report(yTest, prediction)
     print(report)
@@ -132,6 +133,8 @@ if __name__ == '__main__':
     nNegTest = (yTest == 0).sum()
     truePosRate = [tp / nPosTest for tp in truePos]
     falsePosRate = [fp / nNegTest for fp in falsePos]
+    # Calculate Area Under the Curve (AUC) score
+    print(f'AUC Score: {roc_auc_score(yTest, posProb):0.2f}')
 
     plt.figure()
     lw = 2

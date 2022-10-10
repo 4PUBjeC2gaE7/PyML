@@ -1,5 +1,6 @@
 from re import T
 import numpy as np
+import matplotlib.pyplot as plt
 from collections import defaultdict
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
@@ -131,3 +132,16 @@ if __name__ == '__main__':
     nNegTest = (yTest == 0).sum()
     truePosRate = [tp / nPosTest for tp in truePos]
     falsePosRate = [fp / nNegTest for fp in falsePos]
+
+    plt.figure()
+    lw = 2
+    plt.plot(falsePosRate, truePosRate,
+             color = 'darkorange', lw=lw)
+    plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic')
+    plt.legend(loc='lower right')
+    plt.show()
